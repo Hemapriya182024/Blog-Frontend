@@ -5,8 +5,7 @@ const IndexPage = () => {
   return (
     <>
     <Post />
-    <Post />
-    <Post />
+   
     </>
   )
 }

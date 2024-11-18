@@ -106,57 +106,13 @@ button{
   border:0;
   color:#fff;
   border-radius:5px;
-  padding:8px;
+  padding:5px;
 
 }
-.headerbutton{
-  padding:2px;
-}
-.profile {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
 
-.profile-icon {
-  font-size: 30px;
-  color: #333;
-  margin-right: 8px;
-  cursor: pointer;
-}
+form login.h1,form register.h1{
+  text-align:center
 
-.profile span {
-  font-size: 16px;
-}
-
-nav a {
-  margin-left: 10px;
-}
-
-/* Dropdown Menu */
-.dropdown {
-  position: absolute;
-  top: 50px; /* Adjust based on the header height */
-  right: 10px;
-  background-color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
-  padding: 10px;
-  z-index: 1000;
-}
-
-.dropdown-item {
-  display: block;
-  padding: 8px 16px;
-  color: #333;
-  text-decoration: none;
-  cursor: pointer;
-  border: none;
-  background: none;
-}
-
-.dropdown-item:hover {
-  background-color: #f0f0f0;
 }
 
 form h1{
