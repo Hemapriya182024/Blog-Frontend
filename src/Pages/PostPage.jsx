@@ -1,3 +1,83 @@
+
+// import React, { useContext, useEffect, useState } from 'react';
+// import { useParams, Link } from 'react-router-dom';
+// import axios from 'axios';
+// import { formatISO9075 } from 'date-fns';
+// import { userContext } from '../Context/UserContext';
+
+// const PostPage = () => {
+//   const { id } = useParams();
+//   const [post, setPost] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const { userInfo } = useContext(userContext);
+
+//   useEffect(() => {
+//     const fetchPost = async () => {
+//       try {
+//         const response = await axios.get(`http://localhost:5000/post/${id}`);
+//         setPost(response.data);
+//         setLoading(false);
+//       } catch (error) {
+//         console.error('Error fetching post:', error);
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchPost();
+//   }, [id]);
+
+//   if (loading) {
+//     return <div className="text-center text-white">Loading...</div>;
+//   }
+
+//   if (!post) {
+//     return <div className="text-center text-white">Error loading post. Please try again later.</div>;
+//   }
+
+//   return (
+//     <div className="post-page bg-gray-900 text-white min-h-screen p-8">
+//       <div className="max-w-3xl mx-auto">
+//         {/* Title */}
+//         <h1 className="text-4xl font-bold mb-4">{post?.title}</h1>
+
+//         {/* Post date */}
+//         <time className="text-sm text-gray-400">{post?.createdAt ? formatISO9075(new Date(post.createdAt)) : 'Date not available'}</time>
+
+//         {/* Author */}
+//         <div className="author text-sm text-gray-300 mb-6">
+//           by @{post?.author?.username || 'Unknown'}
+//         </div>
+
+//         {/* Edit button (only visible to post author) */}
+//         {userInfo?.id === post?.author?._id && (
+//           <div className="edit-row mb-6">
+//             <Link className="edit-btn hover:text-blue-400 transition-colors duration-300" to={`/edit/${post._id}`}>
+//               <button className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-all duration-300">Edit this post</button>
+//             </Link>
+//           </div>
+//         )}
+
+//         {/* Cover Image */}
+//         <div className="image mb-8">
+//           <img
+//             src={`http://localhost:5000/${post.cover}`}
+//             alt={post.title}
+//             className="w-full h-96 object-cover rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-500"
+//           />
+//         </div>
+
+//         {/* Post Content */}
+//         <div className="content text-lg leading-relaxed text-gray-300" dangerouslySetInnerHTML={{ __html: post.content }} />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default PostPage;
+
+
+
+
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -7,11 +87,38 @@ const PostPage = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState(null);
+  const [isAuthor, setIsAuthor] = useState(false);
 
+  // Fetch user profile
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('No token found');
+          return;
+        }
+
+        const response = await axios.get('http://localhost:5000/profile', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        setProfile(response.data.user);
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  // Fetch post details
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/post/${id}`); // Adjust the endpoint
+        const response = await axios.get(`http://localhost:5000/post/${id}`);
         setPost(response.data);
         setLoading(false);
       } catch (error) {
@@ -23,55 +130,56 @@ const PostPage = () => {
     fetchPost();
   }, [id]);
 
+  // Check if the logged-in user is the author
+  useEffect(() => {
+    if (profile && post) {
+      console.log('Profile:', profile);
+      console.log('Post:', post);
+      if (profile.id && post.author && post.author._id) {
+        setIsAuthor(profile.id === post.author._id);
+      }
+    }
+  }, [profile, post]);
+
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="text-center text-white">Loading...</div>;
   }
 
   if (!post) {
-    return <div>Post not found</div>;
+    return <div className="text-center text-white">Error loading post. Please try again later.</div>;
   }
 
-  const userInfo = { id: "user_id_here" }; // Replace with actual user data
-
   return (
-    <div className="post-page">
-      <h1>{post.title}</h1>
-      <time>{formatISO9075(new Date(post.createdAt))}</time>
-      <div className="author">by @{post.author.username}</div>
-
-      {/* Edit button only visible to the post author */}
-      {userInfo.id === post.author._id && (
-        <div className="edit-row">
-          <Link className="edit-btn" to={`/edit/${post._id}`}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-              />
-            </svg>
-            Edit this post
-          </Link>
+    <div className="post-page bg-gray-900 text-white min-h-screen p-8">
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-4xl font-bold mb-4">{post?.title}</h1>
+        <time className="text-sm text-gray-400">
+          {post?.createdAt ? formatISO9075(new Date(post.createdAt)) : 'Date not available'}
+        </time>
+        <div className="author text-sm text-gray-300 mb-6">
+          by @{post?.author?.username || 'Unknown'}
         </div>
-      )}
 
-      {/* Display the cover image */}
-      <div className="image">
-        <img src={`http://localhost:5000/${post.cover}`} alt={post.title} />
+        {isAuthor && (
+          <div className="edit-row mb-6">
+            <Link className="edit-btn hover:text-blue-400 transition-colors duration-300" to={`/edit/${post._id}`}>
+              <button className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-all duration-300">
+                Edit this post
+              </button>
+            </Link>
+          </div>
+        )}
+
+        <div className="image mb-8">
+          <img
+            src={`http://localhost:5000/${post.cover}`}
+            alt={post.title}
+            className="w-full h-96 object-cover rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-500"
+          />
+        </div>
+
+        <div className="content text-lg leading-relaxed text-gray-300" dangerouslySetInnerHTML={{ __html: post.content }} />
       </div>
-
-      {/* Display the post content */}
-      <div
-        className="content"
-        dangerouslySetInnerHTML={{ __html: post.content }}
-      />
     </div>
   );
 };

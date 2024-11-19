@@ -1,15 +1,53 @@
-import { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
-// Create the context
-export const userContext = createContext({});
+export const userContext = createContext();
 
-// Provide the context to the app
-export function UserContextProvider({ children }) {
-  const [userInfo, setUserInfo] = useState(null); // Initialize userInfo as null
+export const UserProvider = ({ children }) => {
+  const [userInfo, setUserInfo] = useState(null);
+
+  // Function to fetch user info based on token
+  const fetchUserInfo = (token) => {
+    axios
+      .get('http://localhost:5000/profile', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setUserInfo(response.data.user);
+      })
+      .catch((error) => {
+        console.error('Error fetching user info:', error);
+        setUserInfo(null); // Clear user info in case of error
+      });
+  };
+
+  // Check if token exists in localStorage and set userInfo on load
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchUserInfo(token); // Fetch user data if token exists
+    }
+
+    // Event listener to detect changes in localStorage
+    const handleStorageChange = () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        fetchUserInfo(token); // Fetch user data if token exists after storage change
+      } else {
+        setUserInfo(null); // Clear user info if token is removed
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange); // Listen for localStorage changes
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange); // Cleanup listener on component unmount
+    };
+  }, []); // This runs once when the component mounts
 
   return (
     <userContext.Provider value={{ userInfo, setUserInfo }}>
       {children}
     </userContext.Provider>
   );
-}
+};

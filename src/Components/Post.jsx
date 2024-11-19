@@ -1,32 +1,3 @@
-// import React from 'react'
-// import '../index.css';
-
-// const Post = () => {
-//   return (
-//     <div>
-//           <div className='post'>
-//         <div className='image'>
-//         <img src='https://techcrunch.com/wp-content/uploads/2024/11/GettyImages-2032109653-e.jpg?resize=1200,800' />
-//         </div>
-      
-//         <div className="texts">
-//           <h2>Lorem ipsum dolor sit amet consectetur adipisicing elit. c tempora quia.</h2>
-//           <p className="info">
-//             <a href="" className="author" > Hema</a>
-//             <time>2023-9-01 16:45</time>
-//           </p>
-//           <p className='summary'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officia velit nobis eius, .</p>
-//         </div>
-
-
-//       </div>
-     
-      
-//     </div>
-//   )
-// }
-
-// export default Post
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -41,8 +12,7 @@ const Posts = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/posts'); // Replace with your backend URL
-        console.log(response.data)
+        const response = await axios.get('http://localhost:5000/posts'); 
         setPosts(response.data);
         setLoading(false);
       } catch (error) {
@@ -55,34 +25,41 @@ const Posts = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="text-center text-white">Loading...</div>;
   }
 
   if (posts.length === 0) {
-    return <div>No posts found</div>;
+    return <div className="text-center text-white">No posts found</div>;
   }
 
   return (
-    <div className="posts-container">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-10 bg-gray-900 ">
       {posts.map((post) => (
-        <div className="post" key={post._id}>
-          <div className="image">
-            <Link to={`/post/${post._id}`} >
-            <img src={`http://localhost:5000/${post.cover}`} alt={post.title} />
+        <div
+          className="post bg-gray-800 text-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:bg-gray-700"
+          key={post._id}
+        >
+          <div className="image mb-4">
+            <Link to={`/post/${post._id}`}>
+              <img
+                src={`http://localhost:5000/${post.cover}`}
+                alt={post.title}
+                className="w-full h-64 object-cover rounded-md transform hover:scale-110 transition-transform duration-500"
+              />
             </Link>
           </div>
 
           <div className="texts">
-            <h2>
+            <h2 className="text-2xl font-semibold mb-2 hover:text-blue-400 transition-colors duration-300">
               <Link to={`/post/${post._id}`}>{post.title}</Link>
             </h2>
-            <p className="info">
-              <a href="" className="author">
+            <p className="info text-sm text-gray-400 mb-4">
+              <a href="#" className="author text-blue-300 hover:underline">
                 {post.author?.username || 'Unknown Author'}
               </a>
-              <time>{new Date(post.createdAt).toLocaleString()}</time>
+              <time className="ml-2">{new Date(post.createdAt).toLocaleString()}</time>
             </p>
-            <p className="summary">{post.summary}</p>
+            <p className="summary text-gray-300">{post.summary}</p>
           </div>
         </div>
       ))}
@@ -91,4 +68,3 @@ const Posts = () => {
 };
 
 export default Posts;
-

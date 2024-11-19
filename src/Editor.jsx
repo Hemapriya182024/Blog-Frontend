@@ -1,7 +1,12 @@
-import ReactQuill from "react-quill";
+
+
+import React, { useRef } from 'react';
+import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-export default function Editor({value,onChange}) {
+export default function Editor({ value, onChange }) {
+  const quillRef = useRef(null); // Ref to the ReactQuill editor
+
   const modules = {
     toolbar: [
       [{ header: [1, 2, false] }],
@@ -16,13 +21,18 @@ export default function Editor({value,onChange}) {
       ['clean'],
     ],
   };
+
   return (
-    <div className="content">
-    <ReactQuill
-      value={value}
-      theme={'snow'}
-      onChange={onChange}
-      modules={modules} />
+    <div className="editor-container p-5 bg-gray-100 rounded-lg shadow-lg">
+      <ReactQuill
+        ref={quillRef} // Attach ref here
+        value={value}
+        theme="snow"
+        onChange={onChange}
+        modules={modules}
+        placeholder="Write your content here..."
+        className="w-full border border-gray-300 rounded-md"
+      />
     </div>
   );
 }
