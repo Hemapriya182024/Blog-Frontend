@@ -16,7 +16,7 @@ export default function EditPost() {
   const token = localStorage.getItem('token');
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/post/${id}`, {
+    axios.get(`https://blog-backend-c6mq.onrender.com/post/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`, // Include token in the header
       },
@@ -43,7 +43,7 @@ export default function EditPost() {
 
     try {
       const response = await axios.put(
-        'http://localhost:5000/post',
+        'https://blog-backend-c6mq.onrender.com/post',
         data,
         {
           headers: {

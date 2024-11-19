@@ -13,7 +13,7 @@ const Login = () => {
   async function login(e) {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/login', { username, password });
+      const response = await axios.post('https://blog-backend-c6mq.onrender.com/login', { username, password });
 
       // Extract token from response headers or body
       const token = response.data.token || response.headers['authorization']?.split(' ')[1];

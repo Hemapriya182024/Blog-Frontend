@@ -13,7 +13,7 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:5000/register', {
+      const response = await axios.post('https://blog-backend-c6mq.onrender.com/register', {
         username,
         password,
       });

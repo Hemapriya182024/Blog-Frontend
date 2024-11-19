@@ -12,7 +12,7 @@ const Posts = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/posts'); 
+        const response = await axios.get('https://blog-backend-c6mq.onrender.com/posts'); 
         setPosts(response.data);
         setLoading(false);
       } catch (error) {
@@ -42,7 +42,7 @@ const Posts = () => {
           <div className="image mb-4">
             <Link to={`/post/${post._id}`}>
               <img
-                src={`http://localhost:5000/${post.cover}`}
+                src={`https://blog-backend-c6mq.onrender.com/${post.cover}`}
                 alt={post.title}
                 className="w-full h-64 object-cover rounded-md transform hover:scale-110 transition-transform duration-500"
               />

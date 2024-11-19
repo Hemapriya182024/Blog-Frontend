@@ -18,7 +18,7 @@ export default function CreatePost() {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const response = await axios.get('http://localhost:5000/profile', {
+        const response = await axios.get('https://blog-backend-c6mq.onrender.com/profile', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -57,7 +57,7 @@ export default function CreatePost() {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/post', data, {
+      const response = await axios.post('https://blog-backend-c6mq.onrender.com/post', data, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`,

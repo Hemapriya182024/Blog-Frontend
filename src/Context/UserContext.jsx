@@ -9,7 +9,7 @@ export const UserProvider = ({ children }) => {
   // Function to fetch user info based on token
   const fetchUserInfo = (token) => {
     axios
-      .get('http://localhost:5000/profile', {
+      .get('https://blog-backend-c6mq.onrender.com/profile', {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
